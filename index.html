@@ -4,352 +4,246 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chapter 1 · Numbers up to 200</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --sun:#FFD43B;--sky:#74C0FC;--grass:#69DB7C;--grass2:#40C057;
-  --leaf:#2F9E44;--earth:#C76B3A;--white:#FFFDF5;
-  --ink:#1A2E1A;--ink2:#2F6B30;
-  --bubble1:#FF8787;--bubble2:#66D9E8;--bubble3:#A9E34B;--bubble4:#FFA94D;--bubble5:#CC5DE8;
+  --accent:#0D9488;--accent-light:#CCFBF1;--accent-mid:#99F6E4;
+  --accent-dark:#0F766E;--bg:#F7F8FA;--surface:#FFFFFF;
+  --ink:#1C2B2B;--ink2:#4B6060;--border:#E4EAE9;
+  --success:#16A34A;--success-bg:#DCFCE7;
+  --error:#DC2626;--error-bg:#FEE2E2;
+  --hundreds:#0D9488;--tens:#D97706;--ones:#7C3AED;
 }
-html,body{width:100%;min-height:100vh;overflow-x:hidden}
-body{
-  font-family:'Nunito',sans-serif;
-  background:linear-gradient(180deg,#B2E4FF 0%,#74C0FC 30%,#A8F0B8 60%,#69DB7C 100%);
-  min-height:100vh;padding:0 0 32px;
-  display:flex;flex-direction:column;align-items:center;
-}
+html,body{width:100%;min-height:100vh;font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink)}
 
 /* ── HEADER ── */
-.sky-header{
-  width:100%;background:linear-gradient(180deg,#2C7BE5 0%,#74C0FC 100%);
-  padding:16px 20px 24px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:relative;overflow:hidden;
+.header{
+  width:100%;background:var(--surface);
+  border-bottom:2px solid var(--border);
+  padding:16px 20px 0;
+  display:flex;flex-direction:column;align-items:center;
+  position:sticky;top:0;z-index:100;
 }
-.clouds{position:absolute;inset:0;pointer-events:none}
-.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.85}
-.h-title{font-family:'Fredoka One',cursive;font-size:28px;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.15);z-index:1}
-.h-chip{background:#FFD43B;color:#3A2A00;font-size:12px;font-weight:900;padding:5px 14px;border-radius:20px;z-index:1;border:2px solid rgba(0,0,0,.1)}
+.header-row{width:100%;max-width:640px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chapter-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);background:var(--accent-light);padding:4px 12px;border-radius:20px}
+.header-title{font-size:20px;font-weight:900;color:var(--ink)}
 
-/* ── GROUND STRIP ── */
-.ground{width:100%;height:32px;background:var(--grass2);border-top:4px solid var(--leaf);margin-bottom:20px;position:relative}
-.grass-blades{position:absolute;top:-16px;left:0;right:0;display:flex;gap:6px;padding:0 8px;pointer-events:none}
-.blade{width:6px;height:18px;background:var(--grass2);border-radius:3px 3px 0 0;transform-origin:bottom center}
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;width:100%;max-width:640px;padding-bottom:0}
+.tab{
+  flex:1;padding:10px 0;text-align:center;
+  font-size:14px;font-weight:800;cursor:pointer;
+  border-bottom:3px solid transparent;
+  color:var(--ink2);transition:all .2s;
+  border-radius:8px 8px 0 0;
+}
+.tab:hover{color:var(--accent);background:var(--accent-light)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);background:transparent}
 
-/* ── CARDS ── */
-.page{width:100%;max-width:680px;padding:0 16px;display:flex;flex-direction:column;gap:20px}
-.gcard{
-  background:var(--white);
-  border-radius:28px;
-  padding:20px;
-  box-shadow:0 6px 0 rgba(0,0,0,.12),0 2px 16px rgba(0,0,0,.08);
-  border:3px solid rgba(255,255,255,.8);
-  position:relative;overflow:hidden;
-}
-.gcard::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:6px;
-  border-radius:28px 28px 0 0;
-}
-.gcard.yellow::before{background:var(--sun)}
-.gcard.blue::before{background:var(--sky)}
-.gcard.green::before{background:var(--grass)}
-.gcard-title{font-family:'Fredoka One',cursive;font-size:20px;color:var(--ink);margin-bottom:4px}
-.hint{font-size:13px;font-weight:700;color:#666;margin-bottom:14px;line-height:1.5}
+/* ── PAGE ── */
+.page{width:100%;max-width:640px;margin:0 auto;padding:24px 16px 40px;display:flex;flex-direction:column;gap:20px}
+.panel{display:none}.panel.active{display:flex;flex-direction:column;gap:20px}
 
-/* ── COUNT GARDEN ── */
-.garden-zone{
-  min-height:140px;
-  background:linear-gradient(180deg,#E8F8FF 60%,#C8F0D0 100%);
-  border-radius:20px;
-  border:3px dashed var(--grass2);
-  padding:14px;
-  display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;
-  cursor:pointer;position:relative;
-  transition:border-color .2s;
-}
-.garden-zone:hover{border-color:var(--grass);border-style:solid}
-.garden-zone:active{transform:scale(.99)}
-.gz-hint{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:16px;font-weight:800;color:var(--grass2);pointer-events:none;
-  flex-direction:column;gap:6px;text-align:center;
-}
-.sprout{
-  font-size:32px;line-height:1;
-  animation:sproutUp .25s cubic-bezier(.36,1.7,.6,1);
-  display:inline-block;cursor:default;
-  filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));
-}
-@keyframes sproutUp{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+/* ── CARD ── */
+.card{background:var(--surface);border-radius:16px;padding:22px;border:1.5px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);position:relative}
+.card-accent{position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:16px 0 0 16px}
+.card-accent.teal{background:var(--accent)}
+.card-accent.amber{background:#D97706}
+.card-accent.violet{background:#7C3AED}
+.card-title{font-size:17px;font-weight:900;color:var(--ink);margin-bottom:4px;padding-left:12px}
+.card-sub{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:18px;padding-left:12px;line-height:1.5}
 
-.count-hero{display:flex;align-items:center;gap:20px;margin:12px 0 8px;flex-wrap:wrap}
-.big-count{
-  font-family:'Fredoka One',cursive;font-size:88px;color:var(--leaf);line-height:1;
-  text-shadow:0 4px 0 rgba(0,0,0,.1);transition:all .15s;
-  min-width:110px;text-align:center;
-}
-.count-btns{display:flex;flex-direction:column;gap:8px}
-.cbtn{
-  padding:10px 20px;border-radius:14px;border:none;
-  font-family:'Fredoka One',cursive;font-size:16px;
-  cursor:pointer;transition:all .15s;
-}
-.cbtn:active{transform:scale(.92)}
-.cbtn.undo{background:#FFE3E3;color:#C92A2A;border:2.5px solid #FFA8A8}
-.cbtn.undo:hover{background:#FFC9C9}
-.cbtn.clr{background:#E8F5E9;color:#2F6B30;border:2.5px solid #A3D9A5}
-.cbtn.clr:hover{background:#C8E6C9}
-.praise-msg{font-family:'Fredoka One',cursive;font-size:20px;color:var(--bubble1);min-height:28px;text-align:center;animation:bounceIn .3s;text-shadow:0 2px 0 rgba(0,0,0,.1)}
-@keyframes bounceIn{from{transform:scale(0);opacity:0}50%{transform:scale(1.2)}to{transform:scale(1);opacity:1}}
+/* ── BLOCK BUILDER ── */
+.hto-controls{display:flex;gap:10px;margin-bottom:16px}
+.hto-box{flex:1;background:var(--bg);border-radius:12px;padding:12px 10px;text-align:center;border:1.5px solid var(--border)}
+.hto-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.hto-label.h{color:var(--hundreds)}.hto-label.t{color:var(--tens)}.hto-label.o{color:var(--ones)}
+.stepper{display:flex;align-items:center;justify-content:center;gap:8px}
+.stbtn{width:32px;height:32px;border-radius:50%;border:none;font-size:18px;font-weight:900;cursor:pointer;color:#fff;transition:all .12s;display:flex;align-items:center;justify-content:center}
+.stbtn:active{transform:scale(.88)}
+.stbtn.h{background:var(--hundreds)}.stbtn.t{background:var(--tens)}.stbtn.o{background:var(--ones)}
+.stval{font-size:28px;font-weight:900;min-width:28px;text-align:center}
+.stval.h{color:var(--hundreds)}.stval.t{color:var(--tens)}.stval.o{color:var(--ones)}
 
-/* number word bubble */
-.word-bubble{
-  display:inline-block;background:var(--sun);color:#3A2A00;
-  font-family:'Fredoka One',cursive;font-size:20px;
-  padding:8px 20px;border-radius:30px;
-  border:3px solid rgba(0,0,0,.1);
-  box-shadow:0 4px 0 rgba(0,0,0,.1);
-  min-height:44px;min-width:60px;text-align:center;
+.block-canvas{
+  background:var(--bg);border-radius:12px;border:1.5px solid var(--border);
+  padding:14px;min-height:64px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;
+  margin-bottom:14px;
+}
+.flat{display:grid;grid-template-columns:repeat(10,8px);gap:1px}
+.flat-cell{width:8px;height:8px;background:var(--hundreds);border-radius:1px;opacity:.85}
+.rod{display:flex;flex-direction:column;gap:1px}
+.rod-cell{width:10px;height:10px;background:var(--tens);border-radius:1px;opacity:.85}
+.unit-row{display:flex;flex-wrap:wrap;gap:2px;max-width:58px;align-self:flex-end}
+.unit-cell{width:10px;height:10px;background:var(--ones);border-radius:1px;opacity:.85}
+.vdiv{width:1px;background:var(--border);align-self:stretch;margin:0 2px}
+
+.result-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.result-chip{border-radius:10px;padding:8px 14px;text-align:center;min-width:64px}
+.result-chip.h{background:#CCFBF1;border:1.5px solid var(--accent-mid)}
+.result-chip.t{background:#FEF3C7;border:1.5px solid #FDE68A}
+.result-chip.o{background:#EDE9FE;border:1.5px solid #C4B5FD}
+.result-chip.tot{background:var(--ink);border:1.5px solid var(--ink)}
+.rc-num{font-size:26px;font-weight:900}
+.rc-num.h{color:var(--hundreds)}.rc-num.t{color:var(--tens)}.rc-num.o{color:var(--ones)}.rc-num.tot{color:#fff}
+.rc-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin-top:2px}
+.rc-lbl.tot{color:rgba(255,255,255,.7)}
+.eq-sym{font-size:20px;font-weight:900;color:var(--border)}
+
+/* number word */
+.word-row{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.word-label{font-size:12px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em}
+.word-pill{
+  background:var(--ink);color:#fff;
+  font-size:16px;font-weight:800;
+  padding:8px 18px;border-radius:30px;
+  min-width:60px;text-align:center;
   transition:all .2s;
 }
 
-/* ── BLOCK BUILDER ── */
-.pv-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.pvc-box{
-  background:linear-gradient(135deg,var(--white) 0%,#EDF7ED 100%);
-  border-radius:18px;padding:12px 14px;flex:1;min-width:100px;
-  border:2.5px solid var(--grass);text-align:center;
-  box-shadow:0 3px 0 rgba(0,0,0,.08);
-}
-.pvc-box.h{border-color:#69DB7C;background:linear-gradient(135deg,#F0FFF0,#CCFFD0)}
-.pvc-box.t{border-color:#FFA94D;background:linear-gradient(135deg,#FFF5EB,#FFE0C0)}
-.pvc-box.o{border-color:#66D9E8;background:linear-gradient(135deg,#EBF9FC,#C0F0F8)}
-.pvc-lbl{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.pvc-lbl.h{color:#2F9E44}.pvc-lbl.t{color:#D97706}.pvc-lbl.o{color:#1098AD}
-.stepper{display:flex;align-items:center;justify-content:center;gap:10px}
-.stbtn{
-  width:36px;height:36px;border-radius:50%;border:none;
-  font-size:20px;font-weight:900;cursor:pointer;color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 0 rgba(0,0,0,.15);transition:all .12s;
-}
-.stbtn:active{transform:scale(.88);box-shadow:none}
-.stbtn.h{background:#2F9E44}.stbtn.t{background:#D97706}.stbtn.o{background:#1098AD}
-.stval{font-family:'Fredoka One',cursive;font-size:28px;min-width:32px;text-align:center}
-.stval.h{color:#2F9E44}.stval.t{color:#D97706}.stval.o{color:#1098AD}
-
-.block-canvas{
-  display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;
-  background:linear-gradient(135deg,#F0FFF0,#E8F8FF);
-  border-radius:16px;padding:12px;min-height:70px;
-  border:2px solid var(--grass);margin-bottom:14px;
-}
-.flat{display:grid;grid-template-columns:repeat(10,9px);gap:1px}
-.flat-cell{width:9px;height:9px;background:#2F9E44;border-radius:1px}
-.rod{display:flex;flex-direction:column;gap:1px}
-.rod-cell{width:11px;height:11px;background:#D97706;border-radius:2px}
-.unit-row{display:flex;flex-wrap:wrap;gap:2px;max-width:66px;align-self:flex-end}
-.unit-cell{width:11px;height:11px;background:#1098AD;border-radius:2px}
-.vdiv{width:2px;background:rgba(0,0,0,.08);align-self:stretch;margin:0 4px;border-radius:1px}
-
-.pv-result{
-  display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;
-}
-.pvr-chip{
-  border-radius:14px;padding:10px 16px;text-align:center;min-width:68px;
-  box-shadow:0 3px 0 rgba(0,0,0,.1);
-}
-.pvr-chip.h{background:#D1FAE5;border:2.5px solid #6EE7B7}
-.pvr-chip.t{background:#FEF3C7;border:2.5px solid #FDE68A}
-.pvr-chip.o{background:#E0F5F8;border:2.5px solid #99E6F0}
-.pvr-chip.tot{background:#FFF5EB;border:2.5px solid var(--sun)}
-.pvr-num{font-family:'Fredoka One',cursive;font-size:28px}
-.pvr-num.h{color:#059669}.pvr-num.t{color:#B45309}.pvr-num.o{color:#0987A0}.pvr-num.tot{color:var(--ink)}
-.pvr-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#999}
-.eq-s{font-family:'Fredoka One',cursive;font-size:22px;color:#CCC;align-self:center}
-
-/* ── QUIZ ── */
+/* ── PRACTICE QUIZ ── */
 .quiz-blocks{
-  display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;
-  background:linear-gradient(135deg,#F0FFF0,#E8F8FF);
-  border-radius:16px;padding:10px;min-height:50px;
-  border:2.5px dashed var(--grass);margin-bottom:12px;
+  background:var(--bg);border-radius:12px;border:1.5px dashed var(--border);
+  padding:12px;min-height:60px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;
+  margin-bottom:16px;
 }
-.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
 .opt{
-  font-family:'Fredoka One',cursive;font-size:22px;
-  min-width:72px;height:54px;border-radius:14px;
-  border:3px solid #E0E0E0;background:#fff;cursor:pointer;
-  color:var(--ink);transition:all .14s;padding:0 12px;
-  box-shadow:0 3px 0 rgba(0,0,0,.1);
+  font-size:22px;font-weight:900;min-width:72px;height:52px;
+  border-radius:12px;border:2px solid var(--border);background:var(--surface);
+  cursor:pointer;color:var(--ink);transition:all .14s;padding:0 14px;
 }
-.opt:hover{border-color:var(--grass2);transform:scale(1.06);background:#F0FFF0}
-.opt:active{transform:scale(.95)}
-.opt.correct{background:#CCFFD0;border-color:var(--grass2);color:var(--leaf)}
-.opt.wrong{background:#FFE0E0;border-color:#FF6B6B;color:#C92A2A}
-.quiz-fb{font-family:'Fredoka One',cursive;font-size:17px;min-height:24px;margin-top:10px;text-align:center}
+.opt:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-2px)}
+.opt:active{transform:translateY(0)}
+.opt.correct{background:var(--success-bg);border-color:var(--success);color:var(--success)}
+.opt.wrong{background:var(--error-bg);border-color:var(--error);color:var(--error)}
+.quiz-fb{font-size:15px;font-weight:800;min-height:22px;margin-top:12px;text-align:center}
 .next-btn{
-  margin-top:12px;background:linear-gradient(135deg,var(--grass2),var(--leaf));
-  color:#fff;border:none;border-radius:16px;padding:12px 28px;
-  font-family:'Fredoka One',cursive;font-size:17px;cursor:pointer;
-  box-shadow:0 4px 0 rgba(0,0,0,.15);transition:all .18s;
+  margin-top:14px;background:var(--accent);color:#fff;border:none;
+  border-radius:12px;padding:12px 26px;font-size:15px;font-weight:800;
+  cursor:pointer;transition:all .18s;align-self:flex-start;
 }
-.next-btn:hover{transform:scale(1.06)}
-.next-btn:active{transform:scale(.96);box-shadow:none}
+.next-btn:hover{background:var(--accent-dark);transform:translateY(-1px)}
+
+/* score */
+.score-bar{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:10px;padding:10px 14px;border:1.5px solid var(--border);margin-bottom:4px}
+.score-label{font-size:12px;font-weight:800;color:var(--ink2);flex:1}
+.score-nums{font-size:14px;font-weight:900;color:var(--accent)}
 </style>
 </head>
 <body>
 
-<!-- SKY HEADER -->
-<div class="sky-header">
-  <div class="clouds">
-    <div class="cloud" style="width:80px;height:28px;top:8px;left:60px"></div>
-    <div class="cloud" style="width:50px;height:20px;top:14px;left:100px"></div>
-    <div class="cloud" style="width:90px;height:30px;top:6px;right:80px"></div>
-    <div class="cloud" style="width:55px;height:22px;top:14px;right:120px"></div>
+<div class="header">
+  <div class="header-row">
+    <span class="chapter-label">Chapter 1</span>
+    <span class="header-title">Numbers up to 200</span>
   </div>
-  <div class="h-title">🌱 Numbers up to 200</div>
-  <div class="h-chip">Chapter 1</div>
-</div>
-
-<div class="ground">
-  <div class="grass-blades" id="grassBlades"></div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('learn')">Learn</div>
+    <div class="tab" onclick="switchTab('practice')">Practice</div>
+  </div>
 </div>
 
 <div class="page">
 
-  <!-- COUNT GARDEN -->
-  <div class="gcard yellow">
-    <div class="gcard-title">👆 Tap the garden to grow flowers!</div>
-    <div class="hint">Every tap grows one flower. Count out loud as you go! Say the number each time — 1, 2, 3…</div>
+  <!-- LEARN PANEL -->
+  <div class="panel active" id="panel-learn">
+    <div class="card">
+      <div class="card-accent teal"></div>
+      <div class="card-title">Build a number with blocks</div>
+      <div class="card-sub">Use + and − to add or remove blocks. Watch how the number changes!</div>
 
-    <div class="garden-zone" id="gardenZone" onclick="growFlower()" title="Tap to grow a flower!">
-      <div class="gz-hint" id="gzHint">
-        <span style="font-size:40px">🌻</span>
-        <span>Tap here to grow flowers!</span>
+      <div class="hto-controls">
+        <div class="hto-box">
+          <div class="hto-label h">Hundreds</div>
+          <div class="stepper">
+            <button class="stbtn h" onclick="change('h',-1)">−</button>
+            <span class="stval h" id="hv">1</span>
+            <button class="stbtn h" onclick="change('h',1)">+</button>
+          </div>
+        </div>
+        <div class="hto-box">
+          <div class="hto-label t">Tens</div>
+          <div class="stepper">
+            <button class="stbtn t" onclick="change('t',-1)">−</button>
+            <span class="stval t" id="tv">3</span>
+            <button class="stbtn t" onclick="change('t',1)">+</button>
+          </div>
+        </div>
+        <div class="hto-box">
+          <div class="hto-label o">Ones</div>
+          <div class="stepper">
+            <button class="stbtn o" onclick="change('o',-1)">−</button>
+            <span class="stval o" id="ov">5</span>
+            <button class="stbtn o" onclick="change('o',1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-canvas" id="blockCanvas"></div>
+
+      <div class="result-row" id="resultRow"></div>
+
+      <div class="word-row">
+        <span class="word-label">In words:</span>
+        <span class="word-pill" id="wordPill">—</span>
       </div>
     </div>
-
-    <div class="count-hero">
-      <div class="big-count" id="bigCount">0</div>
-      <div class="count-btns">
-        <button class="cbtn undo" onclick="removeFlower()">← Remove one</button>
-        <button class="cbtn clr" onclick="clearGarden()">🗑 Clear all</button>
-      </div>
-    </div>
-
-    <div class="praise-msg" id="praiseMsg"></div>
-
-    <div style="font-size:13px;font-weight:800;color:#666;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 8px">In words, that's:</div>
-    <div class="word-bubble" id="wordBubble">zero</div>
   </div>
 
-  <!-- BLOCK BUILDER -->
-  <div class="gcard blue">
-    <div class="gcard-title">🟩 Build a number with blocks!</div>
-    <div class="hint">Press + and − to add or remove blocks. 🟩 green flat = 100, 🟧 orange rod = 10, 🔵 blue cube = 1</div>
-
-    <div class="pv-controls">
-      <div class="pvc-box h">
-        <div class="pvc-lbl h">Hundreds</div>
-        <div class="stepper">
-          <button class="stbtn h" onclick="change('h',-1)">−</button>
-          <span class="stval h" id="hv">1</span>
-          <button class="stbtn h" onclick="change('h',1)">+</button>
-        </div>
-      </div>
-      <div class="pvc-box t">
-        <div class="pvc-lbl t">Tens</div>
-        <div class="stepper">
-          <button class="stbtn t" onclick="change('t',-1)">−</button>
-          <span class="stval t" id="tv">3</span>
-          <button class="stbtn t" onclick="change('t',1)">+</button>
-        </div>
-      </div>
-      <div class="pvc-box o">
-        <div class="pvc-lbl o">Ones</div>
-        <div class="stepper">
-          <button class="stbtn o" onclick="change('o',-1)">−</button>
-          <span class="stval o" id="ov">5</span>
-          <button class="stbtn o" onclick="change('o',1)">+</button>
-        </div>
-      </div>
+  <!-- PRACTICE PANEL -->
+  <div class="panel" id="panel-practice">
+    <div class="score-bar">
+      <span class="score-label">Questions answered</span>
+      <span class="score-nums" id="scoreDisplay">0 correct / 0 total</span>
     </div>
-
-    <div class="block-canvas" id="blockCanvas"></div>
-    <div class="pv-result" id="pvcRow"></div>
-  </div>
-
-  <!-- QUIZ -->
-  <div class="gcard green">
-    <div class="gcard-title">🔢 What number do these blocks show?</div>
-    <div class="hint">Count the green flats (=100), orange rods (=10), and blue cubes (=1). Then pick your answer!</div>
-    <div class="quiz-blocks" id="quizBlocks"></div>
-    <div class="opts" id="quizOpts"></div>
-    <div class="quiz-fb" id="quizFb"></div>
-    <button class="next-btn" onclick="newQuiz()">Next question ➡️</button>
+    <div class="card">
+      <div class="card-accent teal"></div>
+      <div class="card-title">What number do these blocks show?</div>
+      <div class="card-sub">Count the green squares (= 100), orange rods (= 10), and purple cubes (= 1).</div>
+      <div class="quiz-blocks" id="quizBlocks"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="quiz-fb" id="quizFb"></div>
+      <button class="next-btn" onclick="newQuiz()">Next question →</button>
+    </div>
   </div>
 
 </div>
 
 <script>
-/* Grass blades */
-const gb=document.getElementById('grassBlades');
-for(let i=0;i<40;i++){
-  const b=document.createElement('div');b.className='blade';
-  b.style.height=(12+Math.random()*10)+'px';
-  b.style.transform=`rotate(${(Math.random()-.5)*20}deg)`;
-  gb.appendChild(b);
+/* ── TAB SWITCH ── */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['learn','practice'][i]===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
 }
 
-/* Garden counter */
-let gardenN=0;
-const FLOWERS=['🌻','🌸','🌺','🌼','🌷','💐','🌹','🌿','🍀'];
-const PRAISES={1:'One! 🌟',5:'Five flowers! 🖐',10:'Ten! Great going! 🎉',15:'Fifteen! Amazing! ⭐',20:'Twenty flowers! Wow! 🎊',25:'Twenty-five! 🚀'};
-const WORDS=['zero','one','two','three','four','five','six','seven','eight','nine','ten',
-  'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty',
-  'twenty-one','twenty-two','twenty-three','twenty-four','twenty-five'];
-
-function growFlower(){
-  if(gardenN>=25)return;
-  gardenN++;
-  const zone=document.getElementById('gardenZone');
-  const hint=document.getElementById('gzHint');if(hint)hint.remove();
-  const sp=document.createElement('span');sp.className='sprout';
-  sp.textContent=FLOWERS[Math.floor(Math.random()*FLOWERS.length)];
-  zone.appendChild(sp);
-  document.getElementById('bigCount').textContent=gardenN;
-  document.getElementById('bigCount').style.transform='scale(1.2)';
-  setTimeout(()=>document.getElementById('bigCount').style.transform='',200);
-  document.getElementById('praiseMsg').textContent=PRAISES[gardenN]||'';
-  document.getElementById('wordBubble').textContent=gardenN<WORDS.length?WORDS[gardenN]:gardenN;
-}
-function removeFlower(){
-  if(!gardenN)return;
-  gardenN--;
-  const zone=document.getElementById('gardenZone');
-  const last=zone.querySelector('.sprout:last-child');if(last)last.remove();
-  if(!gardenN)zone.innerHTML='<div class="gz-hint" id="gzHint"><span style="font-size:40px">🌻</span><span>Tap here to grow flowers!</span></div>';
-  document.getElementById('bigCount').textContent=gardenN;
-  document.getElementById('praiseMsg').textContent='';
-  document.getElementById('wordBubble').textContent=gardenN<WORDS.length?WORDS[gardenN]:gardenN;
-}
-function clearGarden(){
-  gardenN=0;
-  document.getElementById('gardenZone').innerHTML='<div class="gz-hint" id="gzHint"><span style="font-size:40px">🌻</span><span>Tap here to grow flowers!</span></div>';
-  document.getElementById('bigCount').textContent='0';
-  document.getElementById('praiseMsg').textContent='';
-  document.getElementById('wordBubble').textContent='zero';
-}
-
-/* Block builder */
+/* ── BLOCK BUILDER ── */
 let bh=1,bt=3,bo=5;
+
+const WORDS_ONES=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const WORDS_TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+function numToWords(n){
+  if(n===0)return'zero';
+  if(n===100)return'one hundred';
+  if(n===200)return'two hundred';
+  let w='';
+  const h=Math.floor(n/100),r=n%100,t=Math.floor(r/10),o=r%10;
+  if(h)w+=(h===1?'one':'two')+' hundred';
+  if(r){
+    if(h)w+=' and ';
+    if(r<20)w+=WORDS_ONES[r];
+    else{w+=WORDS_TENS[t];if(o)w+='-'+WORDS_ONES[o];}
+  }
+  return w;
+}
+
 function makeFlat(){const d=document.createElement('div');d.className='flat';for(let i=0;i<100;i++){const c=document.createElement('div');c.className='flat-cell';d.appendChild(c);}return d;}
 function makeRod(){const d=document.createElement('div');d.className='rod';for(let i=0;i<10;i++){const c=document.createElement('div');c.className='rod-cell';d.appendChild(c);}return d;}
 function makeUnits(n){const d=document.createElement('div');d.className='unit-row';for(let i=0;i<n;i++){const c=document.createElement('div');c.className='unit-cell';d.appendChild(c);}return d;}
 function makeDivider(){const d=document.createElement('div');d.className='vdiv';return d;}
+
 function renderBlocks(){
   const cv=document.getElementById('blockCanvas');cv.innerHTML='';
   for(let i=0;i<bh;i++)cv.appendChild(makeFlat());
@@ -358,15 +252,17 @@ function renderBlocks(){
   if(bt&&bo)cv.appendChild(makeDivider());
   if(bo)cv.appendChild(makeUnits(bo));
   const tot=bh*100+bt*10+bo;
-  document.getElementById('pvcRow').innerHTML=`
-    <div class="pvr-chip h"><div class="pvr-lbl">Hundreds</div><div class="pvr-num h">${bh}</div></div>
-    <div class="eq-s">+</div>
-    <div class="pvr-chip t"><div class="pvr-lbl">Tens</div><div class="pvr-num t">${bt}</div></div>
-    <div class="eq-s">+</div>
-    <div class="pvr-chip o"><div class="pvr-lbl">Ones</div><div class="pvr-num o">${bo}</div></div>
-    <div class="eq-s">=</div>
-    <div class="pvr-chip tot"><div class="pvr-lbl">Number</div><div class="pvr-num tot">${tot}</div></div>`;
+  document.getElementById('resultRow').innerHTML=`
+    <div class="result-chip h"><div class="rc-num h">${bh}</div><div class="rc-lbl">Hundreds</div></div>
+    <span class="eq-sym">+</span>
+    <div class="result-chip t"><div class="rc-num t">${bt}</div><div class="rc-lbl">Tens</div></div>
+    <span class="eq-sym">+</span>
+    <div class="result-chip o"><div class="rc-num o">${bo}</div><div class="rc-lbl">Ones</div></div>
+    <span class="eq-sym">=</span>
+    <div class="result-chip tot"><div class="rc-num tot">${tot}</div><div class="rc-lbl tot">Total</div></div>`;
+  document.getElementById('wordPill').textContent=numToWords(tot);
 }
+
 function change(p,d){
   if(p==='h')bh=Math.max(0,Math.min(2,bh+d));
   else if(p==='t')bt=Math.max(0,Math.min(9,bt+d));
@@ -378,9 +274,13 @@ function change(p,d){
 }
 renderBlocks();
 
-/* Quiz */
-const CFGS=[{h:0,t:1,o:3},{h:0,t:2,o:5},{h:0,t:4,o:0},{h:0,t:7,o:6},{h:1,t:0,o:0},{h:1,t:2,o:4},{h:1,t:5,o:0},{h:1,t:0,o:7},{h:1,t:8,o:3},{h:2,t:0,o:0},{h:0,t:5,o:5},{h:1,t:1,o:1}];
+/* ── QUIZ ── */
+let correct=0,total=0;
+const CFGS=[{h:0,t:1,o:3},{h:0,t:2,o:5},{h:0,t:4,o:0},{h:0,t:7,o:6},{h:1,t:0,o:0},{h:1,t:2,o:4},{h:1,t:5,o:0},{h:1,t:0,o:7},{h:1,t:8,o:3},{h:2,t:0,o:0},{h:0,t:5,o:5},{h:1,t:1,o:1},{h:0,t:9,o:9},{h:1,t:3,o:7}];
 let qAns=0;
+
+function updateScore(){document.getElementById('scoreDisplay').textContent=correct+' correct / '+total+' total';}
+
 function newQuiz(){
   const cfg=CFGS[Math.floor(Math.random()*CFGS.length)];
   qAns=cfg.h*100+cfg.t*10+cfg.o;
@@ -393,15 +293,24 @@ function newQuiz(){
   const pool=new Set([qAns]);
   const offs=[-100,-10,-1,1,10,100].sort(()=>Math.random()-.5);
   for(const off of offs){if(pool.size>=4)break;const w=qAns+off;if(w>0&&w<=200)pool.add(w);}
-  while(pool.size<4){pool.add(Math.floor(Math.random()*200)+1);}
+  while(pool.size<4)pool.add(Math.floor(Math.random()*200)+1);
   const opts=document.getElementById('quizOpts');opts.innerHTML='';
   [...pool].sort(()=>Math.random()-.5).forEach(n=>{
     const b=document.createElement('button');b.className='opt';b.textContent=n;
     b.onclick=()=>{
       document.querySelectorAll('.opt').forEach(x=>x.onclick=null);
+      total++;
       const fb=document.getElementById('quizFb');
-      if(n===qAns){b.classList.add('correct');fb.textContent='🎉 Yes! That is '+qAns+'! Well done! ⭐';fb.style.color='#2F9E44';}
-      else{b.classList.add('wrong');fb.textContent='Count the blocks again carefully! The answer is '+qAns+'.';fb.style.color='#E03131';document.querySelectorAll('.opt').forEach(x=>{if(parseInt(x.textContent)===qAns)x.classList.add('correct');});}
+      if(n===qAns){
+        correct++;b.classList.add('correct');
+        fb.textContent='Correct! That is '+qAns+'.';fb.style.color='var(--success)';
+      } else {
+        b.classList.add('wrong');
+        fb.textContent='Not quite. Count the blocks again — the answer is '+qAns+'.';
+        fb.style.color='var(--error)';
+        document.querySelectorAll('.opt').forEach(x=>{if(parseInt(x.textContent)===qAns)x.classList.add('correct');});
+      }
+      updateScore();
     };
     opts.appendChild(b);
   });

@@ -23,19 +23,24 @@ html,body{width:100%;min-height:100vh;font-family:'Poppins',sans-serif;backgroun
 .cb{position:absolute;top:0;left:0;bottom:0;width:5px;border-radius:var(--r) 0 0 var(--r);background:var(--ac)}
 .ct{font-family:'Grandstander',cursive;font-size:15px;font-weight:800;padding-left:14px;margin-bottom:3px;line-height:1.3}
 .cs{font-size:12px;color:var(--ink2);padding-left:14px;margin-bottom:14px;line-height:1.6}
-/* stepper */
 .cr{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .cg{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.03);border-radius:12px;padding:8px 12px;border:1.5px solid rgba(0,0,0,.06)}
 .cl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;min-width:48px}
 .sb{width:34px;height:34px;border-radius:50%;border:none;font-size:18px;font-weight:900;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .sb:active{transform:scale(.88)}
 .sv{font-family:'Grandstander',cursive;font-size:28px;font-weight:900;min-width:28px;text-align:center}
-/* blocks */
+/* blocks — all unit squares are exactly 8×8px */
 .bx{background:rgba(0,0,0,.02);border-radius:14px;border:1.5px solid rgba(0,0,0,.06);padding:12px;min-height:60px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:14px}
-.flat{display:grid;grid-template-columns:repeat(10,8px);gap:1px}.flat-c{width:8px;height:8px;border-radius:1px;opacity:.8}
-.rod{display:flex;flex-direction:column;gap:1px}.rod-c{width:10px;height:10px;border-radius:1px;opacity:.8}
-.units{display:flex;flex-wrap:wrap;gap:2px;max-width:58px;align-self:flex-end}.unit-c{width:10px;height:10px;border-radius:2px;opacity:.8}
+.flat{display:grid;grid-template-columns:repeat(10,8px);gap:1px}
+.flat-c{width:8px;height:8px;border-radius:1px;opacity:.9}
+.rod{display:flex;flex-direction:column;gap:1px}
+.rod-c{width:8px;height:8px;border-radius:1px;opacity:.9}
+.units{display:flex;flex-wrap:wrap;gap:1px;max-width:44px;align-self:flex-end}
+.unit-c{width:8px;height:8px;border-radius:1px;opacity:.9}
 .sep{width:1px;background:#D1D5DB;align-self:stretch;margin:0 3px}
+/* legend */
+.leg{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.leg-item{display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.03);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700}
 /* options */
 .opts{display:flex;gap:8px;flex-wrap:wrap}
 .opt{font-family:'Grandstander',cursive;font-size:22px;font-weight:800;min-width:72px;height:54px;border-radius:16px;border:2.5px solid rgba(0,0,0,.08);background:#fff;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.05)}
@@ -55,12 +60,6 @@ html,body{width:100%;min-height:100vh;font-family:'Poppins',sans-serif;backgroun
 .chal{background:rgba(0,0,0,.02);border-radius:16px;padding:14px;border:1.5px dashed rgba(0,0,0,.1);margin-top:10px}
 .chal-q{font-family:'Grandstander',cursive;font-size:14px;font-weight:800;margin-bottom:10px}
 .chal-q b{color:var(--ac);font-size:22px}
-canvas{display:block;border-radius:10px}
-/* drag & tap shared */
-.tappable{cursor:pointer;user-select:none;transition:transform .15s}
-.tappable:hover{transform:scale(1.08)}
-.tappable:active{transform:scale(.92)}
-/* misc */
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .pill{display:inline-block;font-family:'Grandstander',cursive;font-size:14px;font-weight:800;padding:6px 18px;border-radius:30px}
 .big{font-family:'Grandstander',cursive;font-weight:900;line-height:1;text-align:center}
@@ -80,7 +79,8 @@ canvas{display:block;border-radius:10px}
 <div class="pnl on" id="p-learn">
   <div class="card"><div class="cb"></div>
     <div class="ct">Build a number with blocks</div>
-    <div class="cs">Green = 100 · Orange = 10 · Purple = 1. Adjust the dials and watch the number change.</div>
+    <div class="cs">Add or remove blocks and watch the number change.</div>
+    <div class="leg" id="leg-learn"></div>
     <div class="cr">
       <div class="cg"><span class="cl" style="color:#059669">Hundreds</span><button class="sb" style="background:#059669" onclick="chB('h',-1)">−</button><span class="sv" style="color:#059669" id="Hv">1</span><button class="sb" style="background:#059669" onclick="chB('h',1)">+</button></div>
       <div class="cg"><span class="cl" style="color:#D97706">Tens</span><button class="sb" style="background:#D97706" onclick="chB('t',-1)">−</button><span class="sv" style="color:#D97706" id="Tv">3</span><button class="sb" style="background:#D97706" onclick="chB('t',1)">+</button></div>
@@ -102,7 +102,7 @@ canvas{display:block;border-radius:10px}
 <div class="pnl" id="p-practice">
   <div class="card"><div class="cb"></div>
     <div class="ct">What number is this?</div>
-    <div class="cs">Count the green flats (100), orange rods (10), and purple cubes (1).</div>
+    <div class="cs" id="prac-legend-wrap"></div>
     <div class="bx" id="qB"></div>
     <div class="opts" id="qO"></div>
     <div class="fb" id="qF"></div>
@@ -120,12 +120,55 @@ function mkOpts(cid,items,correct,fid){var c=document.getElementById(cid);c.inne
 var W1=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
 var W10=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
 function toW(n){if(!n)return'zero';if(n===200)return'two hundred';if(n===100)return'one hundred';var w='',h=Math.floor(n/100),r=n%100;if(h)w+=(h===1?'one':'two')+' hundred';if(r){if(h)w+=' and ';if(r<20)w+=W1[r];else{w+=W10[Math.floor(r/10)];if(r%10)w+='-'+W1[r%10]}}return w}
-var bH=1,bT=3,bO=5;
-function chB(p,d){if(p==='h')bH=Math.max(0,Math.min(2,bH+d));if(p==='t')bT=Math.max(0,Math.min(9,bT+d));if(p==='o')bO=Math.max(0,Math.min(9,bO+d));rndr()}
+
+/* Block builders — all cells exactly 8×8px */
 function mkF(){var d=document.createElement('div');d.className='flat';for(var i=0;i<100;i++){var c=document.createElement('div');c.className='flat-c';c.style.background='#059669';d.appendChild(c)}return d}
 function mkR(){var d=document.createElement('div');d.className='rod';for(var i=0;i<10;i++){var c=document.createElement('div');c.className='rod-c';c.style.background='#D97706';d.appendChild(c)}return d}
 function mkU(n){var d=document.createElement('div');d.className='units';for(var i=0;i<n;i++){var c=document.createElement('div');c.className='unit-c';c.style.background='#7C3AED';d.appendChild(c)}return d}
 function mkS(){var d=document.createElement('div');d.className='sep';return d}
+
+/* Legend: render actual block shapes inline */
+function mkLegend(containerId){
+  var c=document.getElementById(containerId);
+  if(!c)return;
+  c.innerHTML='';
+
+  /* Flat legend: 4×4 mini grid to represent 100 */
+  var li1=document.createElement('div');li1.className='leg-item';
+  var sg1=document.createElement('div');sg1.style.cssText='display:grid;grid-template-columns:repeat(4,6px);gap:1px';
+  for(var i=0;i<16;i++){var cell=document.createElement('div');cell.style.cssText='width:6px;height:6px;background:#059669;border-radius:1px;opacity:.9';sg1.appendChild(cell)}
+  li1.appendChild(sg1);
+  var t1=document.createElement('span');t1.textContent='= 100';li1.appendChild(t1);
+  c.appendChild(li1);
+
+  /* Rod legend: column of 5 cells to represent 10 */
+  var li2=document.createElement('div');li2.className='leg-item';
+  var sg2=document.createElement('div');sg2.style.cssText='display:flex;flex-direction:column;gap:1px';
+  for(var i=0;i<5;i++){var cell=document.createElement('div');cell.style.cssText='width:6px;height:6px;background:#D97706;border-radius:1px;opacity:.9';sg2.appendChild(cell)}
+  li2.appendChild(sg2);
+  var t2=document.createElement('span');t2.textContent='= 10';li2.appendChild(t2);
+  c.appendChild(li2);
+
+  /* Unit legend: single cell */
+  var li3=document.createElement('div');li3.className='leg-item';
+  var sg3=document.createElement('div');sg3.style.cssText='width:6px;height:6px;background:#7C3AED;border-radius:1px;opacity:.9';
+  li3.appendChild(sg3);
+  var t3=document.createElement('span');t3.textContent='= 1';li3.appendChild(t3);
+  c.appendChild(li3);
+}
+mkLegend('leg-learn');
+
+/* Replace practice .cs text with same legend */
+(function(){
+  var wrap=document.getElementById('prac-legend-wrap');
+  if(!wrap)return;
+  wrap.style.cssText='padding-left:14px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center';
+  wrap.id='leg-practice';
+  mkLegend('leg-practice');
+})();
+
+var bH=1,bT=3,bO=5;
+function chB(p,d){if(p==='h')bH=Math.max(0,Math.min(2,bH+d));if(p==='t')bT=Math.max(0,Math.min(9,bT+d));if(p==='o')bO=Math.max(0,Math.min(9,bO+d));rndr()}
 function rndr(){
   document.getElementById('Hv').textContent=bH;document.getElementById('Tv').textContent=bT;document.getElementById('Ov').textContent=bO;
   var el=document.getElementById('blocks');el.innerHTML='';
@@ -155,7 +198,6 @@ function nwQ(){
   mkOpts('qO',pool4(qA,1,200),qA,'qF');
 }
 nwQ();
-
 </script>
 </body>
 </html>
